@@ -1,0 +1,13 @@
+# Core dependencies
+pandas>=2.0.0
+requests>=2.31.0
+python-dotenv>=1.0.0
+tableauhyperapi>=0.0.17070
+
+# CLI + Packaging (argparse is built-in on Python >=3.10)
+argparse; python_version < "3.10"
+setuptools>=68.0.0
+build>=1.0.0
+
+# Optional: testing framework
+pytest>=8.0.0

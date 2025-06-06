@@ -1,0 +1,31 @@
+[project]
+name = "airtable-to-tableau"
+version = "0.1.0"
+description = "A CLI tool to export Airtable data to Tableau Hyper files"
+readme = "README.md"
+authors = [
+  { name = "Jaimie Garner", email = "jaimie.garner@cbre.com" }
+]
+license = { text = "MIT" }
+requires-python = ">=3.8"
+
+dependencies = [
+  "pandas",
+  "numpy",               # Required if you're using it in sanitize utils
+  "python-dotenv",
+  "requests",
+  "tableauhyperapi"
+]
+
+[project.scripts]
+airtable-export = "airtable_to_tableau.cli:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]

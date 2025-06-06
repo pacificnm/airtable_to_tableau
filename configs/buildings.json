@@ -1,0 +1,67 @@
+{
+  "profiles": {
+    "default": {
+      "description": "Default export profile",
+      "tables": [
+        {
+          "base_id": "appXXXXXXXXXXX",
+          "table_name": "Building",
+          "output_file": "output/buildings.hyper",
+          "column_order": ["Building Name", "Region", "Neighborhood", "Capacity", "CBRE Scope"],
+          "columns": [
+            {
+              "source": "Name",
+              "rename": "Building Name",
+              "type": "str"
+            },
+            {
+              "source": "^Region.*",  
+              "type": "str",
+              "regex": true         
+            },
+            {
+              "source": "Neighborhood",
+              "type": "str"
+            },
+            {
+              "source": "Max Capacity",
+              "rename": "Capacity",
+              "type": "float",
+              "format": "%.0f",
+              "default": 0
+            },
+            {
+              "source": "CBRE Scope",
+              "type": "bool",
+              "default": false
+            }
+          ]
+        }
+      ]
+    },
+    "metrics_only": {
+      "description": "Exports only numeric metrics",
+      "tables": [
+        {
+          "base_id": "appXXXXXXXXXXX",
+          "table_name": "Building",
+          "output_file": "output/metrics.hyper",
+          "columns": [
+            {
+              "source": "Max Capacity",
+              "type": "float"
+            },
+            {
+              "source": "Strategic Capacity",
+              "type": "float"
+            },
+            {
+              "source": "Square Footage",
+              "type": "float"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

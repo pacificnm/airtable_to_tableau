@@ -1,0 +1,50 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env
+.env.*
+
+# macOS system files
+.DS_Store
+
+# Output files
+output/
+*.hyper
+
+# Logs and debug files
+*.log
+
+# IDE/editor settings
+.vscode/
+.idea/
+*.swp
+
+# Test results
+.coverage
+htmlcov/
+*.pytest_cache/
+
+# Snowflake or API credentials
+*.key
+*.pem
+
+# Jupyter notebooks checkpoints (if any)
+.ipynb_checkpoints/
+
+# PyInstaller
+*.spec
+dist/
+build/
+
+# Optional: compiled C extensions
+*.so
+
+#VSCode
+.vscode
+.code-workspace
+*.egg-info/
+hyperd.log
