@@ -207,13 +207,6 @@ Output:
 |---------------|-------------|----------|
 | Windrunner    | Americas    | 150      |
 
-## ☁️ What Are Azure Functions?
-Azure Functions are serverless compute resources. You define small logic units that run on triggers (timer, HTTP, blob). They're scalable, efficient, and low maintenance.
-
-### Benefits:
-- Schedule exports automatically
-- No need to manage servers
-- Deploy independently per job
 
 ## 📤 How Tableau Uses the Output
 Generated `.hyper` files can be used by Tableau in three ways:
