@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block title %}Viewing {{ filename }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2>📝 Viewing: {{ filename }}</h2>
+  <a href="{{ url_for('routes.config_list') }}" class="btn btn-outline-secondary">← Back to Configs</a>
+</div>
+
+<div class="card">
+  <div class="card-header bg-dark text-white">
+    Contents of {{ filename }}
+  </div>
+  <div class="card-body bg-light">
+    <pre><code class="text-dark">{{ file_contents }}</code></pre>
+  </div>
+</div>
+{% endblock %}

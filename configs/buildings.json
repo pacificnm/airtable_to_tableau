@@ -1,27 +1,41 @@
 {
   "profiles": {
     "default": {
-      "description": "Default export profile",
+      "description": "Default Building export profile",
       "tables": [
         {
-          "base_id": "appXXXXXXXXXXX",
+          "base_id": "app3KEBd4S967R9Cj",
           "table_name": "Building",
           "output_file": "output/buildings.hyper",
-          "column_order": ["Building Name", "Region", "Neighborhood", "Capacity", "CBRE Scope"],
+          "column_order": [
+            "Location ID",
+            "Building Name",
+            "Region",
+            "Neighborhood",
+            "Capacity",
+            "CBRE Scope"
+          ],
           "columns": [
+            {
+              "source": "Location ID",
+              "rename": "Location ID",
+              "type": "int"
+            },
             {
               "source": "Name",
               "rename": "Building Name",
               "type": "str"
             },
             {
-              "source": "^Region.*",  
-              "type": "str",
-              "regex": true         
+              "source": "Region Text",
+              "rename": "Region",
+              "type": "str"
             },
             {
-              "source": "Neighborhood",
-              "type": "str"
+              "source": "Neighborhood Text",
+              "rename": "Neighborhood",
+              "type": "str",
+              "default": "N/A"
             },
             {
               "source": "Max Capacity",
@@ -32,6 +46,13 @@
             },
             {
               "source": "CBRE Scope",
+              "rename": "In Scope",
+              "type": "bool",
+              "default": false
+            },
+            {
+              "source": "SiteTools",
+              "rename": "Site Tools",
               "type": "bool",
               "default": false
             }
@@ -43,10 +64,20 @@
       "description": "Exports only numeric metrics",
       "tables": [
         {
-          "base_id": "appXXXXXXXXXXX",
+          "base_id": "app3KEBd4S967R9Cj",
           "table_name": "Building",
           "output_file": "output/metrics.hyper",
           "columns": [
+            {
+              "source": "Location ID",
+              "rename": "Location ID",
+              "type": "int"
+            },
+            {
+              "source": "Name",
+              "rename": "Building Name",
+              "type": "str"
+            },
             {
               "source": "Max Capacity",
               "type": "float"

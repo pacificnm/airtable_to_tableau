@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block title %}Crete Config{% endblock %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h3 class="d-flex justify-content-between align-items-center">
+      🆕 Create New Config
+      <a href="{{ url_for('routes.list_configs') }}" class="btn btn-secondary btn-sm">← Back to Configs</a>
+    </h3>
+
+    <form action="{{ url_for('routes.create_config') }}" method="POST" class="mt-4">
+      <div class="mb-3">
+        <label for="filename" class="form-label">Config File Name (e.g., <code>buildings.json</code>)</label>
+        <input type="text" class="form-control" id="filename" name="filename" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="description" class="form-label">Profile Description</label>
+        <input type="text" class="form-control" id="description" name="description" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="base_id" class="form-label">Airtable Base ID</label>
+        <input type="text" class="form-control" id="base_id" name="base_id" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="table_name" class="form-label">Airtable Table Name</label>
+        <input type="text" class="form-control" id="table_name" name="table_name" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Create Config</button>
+    </form>
+  </div>
+{% endblock %}

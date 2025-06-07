@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+
+{% block title %}View Hyper File{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Viewing Hyper File: {{ filename }}</h2>
+    <a href="{{ url_for('routes.download_file', folder='output', filename=filename) }}" class="btn btn-primary">
+      Download
+    </a>
+  </div>
+
+ 
+  <div class="mb-4">
+    <!-- File Info Block -->
+    <h5>📊 File Info</h5>
+    <ul class="list-unstyled">
+      <li><strong>Full Path:</strong> {{ file_info.path }}</li>
+      <li><strong>Size:</strong> {{ file_info.size_human }}</li>
+      <li><strong>Created:</strong> {{ file_info.created }}</li>
+    </ul>
+
+    <h5>📦 CLI Command</h5>
+    <code class="d-block mb-3">airtable-export read --input {{ file_info.relative_path }} --table {{ table_name }}</code>
+  </div>
+
+  <!-- Table Preview -->
+  <h5>📄 Table Preview</h5>
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <div>
+      <strong>Showing {{ displayed_rows }} of {{ total_rows }} rows</strong>
+    </div>
+    <div class="form-group mb-0">
+      <input type="text" id="tableSearch" class="form-control" placeholder="🔍 Search table..." />
+    </div>
+  </div>
+  <div class="table-responsive mt-4">
+    {{ table|safe }}
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const searchInput = document.getElementById("tableSearch");
+      const table = document.querySelector("table");
+      const rows = table ? table.querySelectorAll("tbody tr") : [];
+  
+      searchInput?.addEventListener("keyup", function () {
+        const filter = searchInput.value.toLowerCase();
+        let visibleCount = 0;
+  
+        rows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          const show = text.includes(filter);
+          row.style.display = show ? "" : "none";
+          if (show) visibleCount++;
+        });
+  
+        // Update row count
+        const counter = document.querySelector("#rowCountDisplay");
+        if (counter) counter.textContent = `Showing ${visibleCount} of {{ total_rows }} rows`;
+      });
+    });
+  </script>
+
+  <!-- Pagination Controls -->
+  <nav aria-label="Table pagination">
+    <ul class="pagination justify-content-center mt-4">
+      {% if page > 1 %}
+        <li class="page-item">
+          <a class="page-link" href="{{ url_for('routes.view_hyper', filename=filename, page=page-1) }}">Previous</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Previous</span>
+        </li>
+      {% endif %}
+
+      {% for p in range(1, total_pages + 1) %}
+        <li class="page-item {% if p == page %}active{% endif %}">
+          <a class="page-link" href="{{ url_for('routes.view_hyper', filename=filename, page=p) }}">{{ p }}</a>
+        </li>
+      {% endfor %}
+
+      {% if page < total_pages %}
+        <li class="page-item">
+          <a class="page-link" href="{{ url_for('routes.view_hyper', filename=filename, page=page+1) }}">Next</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Next</span>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+
+  <a href="{{ url_for('routes.view_config', filename=config_file) }}" class="btn btn-secondary mt-3">
+    Back to Config
+  </a>
+</div>
+{% endblock %}

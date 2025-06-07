@@ -94,6 +94,30 @@ Read a Hyper file:
 airtable-export read --input output/buildings.hyper --table Building
 ```
 
+## 🌐 Web Interface (New)
+A lightweight Flask-based web front end is now available to make working with `airtable_to_tableau` easier through your browser. You can view, edit, run, and create Airtable export configurations without touching the CLI.
+
+### 🚀 Features
+- View and manage all existing config files
+- Edit JSON configs with syntax-highlighting and validation
+- Run exports for specific profiles with live stream output
+- Browse generated `.hyper` files with pagination
+- Create new config files using a simple form
+- Auto-populate column names from Airtable for new configs
+- Built-in help panel with JSON schema documentation
+
+### 🖥️ Starting the Web Server
+
+```bash
+./start_web.py
+```
+
+Then open your browser and visit:
+
+```
+http://127.0.0.1:5000
+```
+
 ## 🛠️ Config File Format (JSON)
 Supports multiple profiles for different table setups:
 ```json
