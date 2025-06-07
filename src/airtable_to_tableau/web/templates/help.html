@@ -3,25 +3,224 @@
 {% block title %}Help & Documentation{% endblock %}
 
 {% block content %}
-  <div class="container mt-4">
-    <h1>🆘 Help & Documentation</h1>
-    <p>Welcome to the help section. Here you’ll find usage tips, CLI examples, and troubleshooting steps.</p>
+ <h1>📘 Help: Airtable to Tableau Export Tool</h1>
 
-    <h3>🛠 CLI Usage</h3>
-    <pre><code>airtable-export export --config configs/yourfile.json --profile default</code></pre>
-
-    <h3>📁 File Types</h3>
+  <nav>
+    <h2>📑 Table of Contents</h2>
     <ul>
-      <li><strong>.json</strong> — Config files for exporting</li>
-      <li><strong>.hyper</strong> — Tableau Hyper output files</li>
+      <li><a href="#install">Installation</a></li>
+      <li><a href="#cli">Using the CLI</a></li>
+      <li><a href="#web">Using the Web Interface</a></li>
+      <li><a href="#config">JSON Configuration Guide</a></li>
+    </ul>
+  </nav>
+
+  <section id="install">
+    <h2>🔧 Installation</h2>
+    <p>Make sure you have Python 3.8 or later installed.</p>
+    <pre><code>git clone https://github.com/pacificnm/airtable_to_tableau.git
+cd airtable_to_tableau
+pip install -r requirements.txt</code></pre>
+    <p>Alternatively, use the provided <code>Makefile</code>:</p>
+    <pre><code>make install</code></pre>
+  </section>
+
+  <section id="cli">
+    <h2>🚀 Using the CLI</h2>
+    <p>To export data via CLI, run:</p>
+    <pre><code>python -m airtable_to_tableau.cli --config configs/buildings.json --profile default</code></pre>
+
+    <p><strong>Options:</strong></p>
+    <ul>
+      <li><code>--config</code>: Path to the JSON config file.</li>
+      <li><code>--profile</code>: Name of the profile to run (e.g. <code>default</code>).</li>
+      <li><code>--verbose</code>: (Optional) Print more detailed output logs.</li>
     </ul>
 
-    <h3>❓ Troubleshooting</h3>
-    <p>If you encounter errors, check:</p>
+    <p>To view data in the hyper file CLI, run:</p>
+    <pre><code>python -m airtable-export read --input path/to/file.hyper --table TableName</code></pre>
+    <p>See the <code>configs/</code> directory for examples.</p>
+  </section>
+
+  <section id="web">
+    <h2>🌐 Using the Web Interface</h2>
+    <p>Start the web interface with:</p>
+    <pre><code>python start_web.py</code></pre>
+
+    <p>This launches a local Flask server (default port 5000) where you can:</p>
     <ul>
-      <li>That your AIRTABLE_API_KEY is set</li>
-      <li>The config file path is correct</li>
-      <li>The base ID and table name match your Airtable workspace</li>
+      <li>📄 View and manage config profiles</li>
+      <li>📊 Trigger exports via buttons</li>
+      <li>🔍 Search and filter `.hyper` files</li>
+      <li>📋 View Airtable metadata for each base and table</li>
     </ul>
-  </div>
+
+    <p>Access it at: <a href="http://localhost:5000" target="_blank">http://localhost:5000</a></p>
+  </section>
+
+  <section id="config">
+    <h2>🧩 JSON Configuration Guide</h2>
+    <p>This tool uses a structured JSON file to define how data is fetched from Airtable and transformed into Tableau Hyper format.</p>
+
+    <h3>📁 Top-Level Structure</h3>
+    <pre><code>{
+  "profiles": {
+    "default": {
+      "description": "Default export profile",
+      "tables": [ ... ]
+    }
+  }
+}</code></pre>
+
+    <p><strong>profiles</strong>: A dictionary of named export profiles.</p>
+    <p><strong>description</strong>: A summary of the profile’s purpose.</p>
+
+    <h3>📄 Table Definition</h3>
+    <pre><code>{
+  "base_id": "appXXXXXXXXXXXXXX",
+  "table_name": "Your Table",
+  "output_file": "output/table.hyper",
+  "column_order": ["Col A", "Col B"],
+  "columns": [ ... ]
+}</code></pre>
+
+    <ul>
+      <li><strong>base_id</strong>: Airtable base ID</li>
+      <li><strong>table_name</strong>: Airtable table name</li>
+      <li><strong>output_file</strong>: Path to `.hyper` output</li>
+      <li><strong>column_order</strong>: Optional. Specifies order of columns in export</li>
+    </ul>
+
+    <h3>📊 Column Definition</h3>
+    <pre><code>{
+  "source": "Field Name",
+  "rename": "New Name",
+  "type": "str",
+  "default": "N/A",
+  "format": "%.2f",
+  "regex": true
+}</code></pre>
+
+    <ul>
+      <li><strong>source</strong>: Airtable field name to fetch. Can be a regex pattern if <code>regex: true</code> is set.</li>
+      <li><strong>rename</strong>: Optional. Rename column in the output.</li>
+      <li><strong>type</strong>: Required. Convert value to a specific type.</li>
+      <li><strong>default</strong>: Optional. Value to use if the field is missing or empty.</li>
+      <li><strong>format</strong>: Optional. Format string (e.g., <code>"%.2f"</code>) applied during export.</li>
+      <li><strong>regex</strong>: Optional. Treat <code>source</code> as a regex to match multiple fields.</li>
+    </ul>
+
+    <h4>✅ Supported Types</h4>
+    <ul>
+      <li><code>str</code>: Convert to string</li>
+      <li><code>int</code>: Convert to integer</li>
+      <li><code>float</code>: Convert to float</li>
+      <li><code>bool</code>: Convert to boolean</li>
+      <li><code>date</code>: Convert to datetime</li>
+      <li><code>noop</code>: Ignore field (no transformation)</li>
+    </ul>
+
+    <h3>📐 Column Ordering</h3>
+    <p>Use <code>column_order</code> to explicitly define the sequence of fields in the output file. If not specified, column order will follow Airtable API order.</p>
+
+    <h3>🧪 Example</h3>
+    <pre><code>{
+  "profiles": {
+    "default": {
+      "description": "Default Building export profile",
+      "tables": [
+        {
+          "base_id": "app3KEBd4S967R9Cj",
+          "table_name": "Building",
+          "output_file": "output/buildings.hyper",
+          "column_order": [
+            "Location ID",
+            "Building Name",
+            "Region",
+            "Neighborhood",
+            "Capacity",
+            "CBRE Scope"
+          ],
+          "columns": [
+            {
+              "source": "Location ID",
+              "rename": "Location ID",
+              "type": "int"
+            },
+            {
+              "source": "Name",
+              "rename": "Building Name",
+              "type": "str"
+            },
+            {
+              "source": "Region Text",
+              "rename": "Region",
+              "type": "str"
+            },
+            {
+              "source": "Neighborhood Text",
+              "rename": "Neighborhood",
+              "type": "str",
+              "default": "N/A"
+            },
+            {
+              "source": "Max Capacity",
+              "rename": "Capacity",
+              "type": "float",
+              "format": "%.0f",
+              "default": 0
+            },
+            {
+              "source": "CBRE Scope",
+              "rename": "In Scope",
+              "type": "bool",
+              "default": false
+            },
+            {
+              "source": "SiteTools",
+              "rename": "Site Tools",
+              "type": "bool",
+              "default": false
+            }
+          ]
+        }
+      ]
+    },
+    "metrics_only": {
+      "description": "Exports only numeric metrics",
+      "tables": [
+        {
+          "base_id": "app3KEBd4S967R9Cj",
+          "table_name": "Building",
+          "output_file": "output/metrics.hyper",
+          "columns": [
+            {
+              "source": "Location ID",
+              "rename": "Location ID",
+              "type": "int"
+            },
+            {
+              "source": "Name",
+              "rename": "Building Name",
+              "type": "str"
+            },
+            {
+              "source": "Max Capacity",
+              "type": "float"
+            },
+            {
+              "source": "Strategic Capacity",
+              "type": "float"
+            },
+            {
+              "source": "Square Footage",
+              "type": "float"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}</code></pre>
+  </section>
 {% endblock %}
