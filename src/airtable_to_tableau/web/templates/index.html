@@ -1,0 +1,36 @@
+<!-- templates/index.html -->
+{% extends "layout.html" %}
+
+{% block title %}Airtable to Tableau Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="mb-4">📊 Airtable to Tableau Dashboard</h1>
+
+  <div class="row">
+  
+    <!-- Config Files Section -->
+    <div class="col-md-12">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">🛠️ Config Files</h3>
+        <a href="{{ url_for('routes.create_config_form') }}" class="btn btn-sm btn-success">
+          Create Config
+        </a>
+      </div>
+      <ul class="list-group">
+        {% for file in config_files %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ file }}
+            <div class="btn-group">
+              <a href="{{ url_for('routes.view_config', filename=file) }}" class="btn btn-sm btn-primary">View</a>
+              <a href="{{ url_for('routes.download_file', folder='configs', filename=file) }}" class="btn btn-sm btn-secondary me-2">Download</a>
+            </div>
+          </li>
+        {% else %}
+          <li class="list-group-item text-muted">No config files found.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

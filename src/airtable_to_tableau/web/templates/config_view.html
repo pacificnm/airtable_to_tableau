@@ -1,0 +1,158 @@
+{% extends "layout.html" %}
+
+{% block title %}View Config - {{ filename }}{% endblock %}
+
+{% block content %}
+
+<!-- Page Header info-->
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>📝 Viewing Config: {{ filename }}</h2>
+  <a href="{{ url_for('routes.download_file', folder='configs', filename=filename) }}" class="btn btn-primary">Download</a>
+</div>
+
+  <!-- File info-->
+  <div class="card mt-3 mb-4">
+    <div class="card-body">
+      <h5 class="card-title">📊 File Info</h5>
+      <ul class="list-unstyled">
+        <li><strong>Full Path:</strong> {{ file_info.path }}</li>
+        <li><strong>Size:</strong> {{ file_info.size_human }}</li>
+        <li><strong>Created:</strong> {{ file_info.created }}</li>
+      </ul>
+      <hr>
+      <h5 class="card-title">📦 CLI Command{% if cli_commands|length > 1 %}s{% endif %}</h5>
+     <ul class="list-group">
+      {% for profile, data in cli_commands.items() %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <code>{{ data.cmd }}</code>
+          <div class="btn-group">
+            <a href="{{ url_for('routes.run_export_view', filename=filename, profile=profile) }}" class="btn btn-sm btn-success">
+              Run
+            </a>
+            <a href="{{ url_for('routes.view_hyper', filename=data.output_file|replace('output/', ''), config=filename, profile=profile) }}" class="btn btn-sm btn-secondary">View</a>
+          </div>
+        </li>
+      {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Left: Config JSON -->
+    <div class="col-md-8">
+      <!-- Ace Editor Container -->
+      <div id="editor" style="height: 600px; width: 100%;" class="border rounded">{{ config }}</div>
+
+      <!-- Form for saving -->
+      <form method="post" action="{{ url_for('routes.edit_config', filename=filename) }}" onsubmit="return validateAndSubmitForm();">
+        <input type="hidden" name="json_data" id="json_data">
+        <input type="hidden" name="config_data" id="config_data">
+        <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+      </form>
+
+      <hr />
+      <!-- Help Section -->
+<div class="mt-5">
+  <div id="configHelp">
+    <div>
+      <h2 class="accordion-header" id="headingHelp">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHelp" aria-expanded="false" aria-controls="collapseHelp">
+          📘 JSON Configuration Reference
+        </button>
+      </h2>
+      <div id="collapseHelp" class="accordion-collapse" aria-labelledby="headingHelp" data-bs-parent="#configHelp">
+        <div class="accordion-body">
+
+          <h5>Top-Level Structure</h5>
+          <ul>
+            <li><strong>profiles</strong>: A dictionary with profile names as keys.</li>
+          </ul>
+
+          <h5>Profile-Level Options</h5>
+          <ul>
+            <li><strong>description</strong> <em>(optional)</em>: Brief summary of the export profile.</li>
+            <li><strong>tables</strong>: A list of Airtable table definitions to export.</li>
+          </ul>
+
+          <h5>Table-Level Options</h5>
+          <ul>
+            <li><strong>base_id</strong> <em>(required)</em>: Airtable base ID.</li>
+            <li><strong>table_name</strong> <em>(required)</em>: Name of the table to export.</li>
+            <li><strong>output_file</strong> <em>(required)</em>: Output path for the .hyper file.</li>
+            <li><strong>columns</strong> <em>(optional)</em>: Column definitions with mapping and types.</li>
+          </ul>
+
+          <h5>Column-Level Options</h5>
+          <ul>
+            <li><strong>source</strong> <em>(required)</em>: Airtable field name.</li>
+            <li><strong>rename</strong> <em>(optional)</em>: New name for the output column.</li>
+            <li><strong>type</strong> <em>(optional)</em>: Data type (<code>str</code>, <code>int</code>, <code>float</code>, <code>bool</code>).</li>
+            <li><strong>default</strong> <em>(optional)</em>: Default value if field is missing.</li>
+            <li><strong>format</strong> <em>(optional)</em>: String format, e.g. <code>"%.0f"</code>.</li>
+            <li><strong>regex</strong> <em>(optional)</em>: Regular expression filter.</li>
+          </ul>
+
+          <h5>Example</h5>
+          <pre><code>{
+  "profiles": {
+    "default": {
+      "description": "Export default profile",
+      "tables": [
+        {
+          "base_id": "appXXXXXXXXXXXXXX",
+          "table_name": "Sample Table",
+          "output_file": "output/sample.hyper",
+          "columns": [
+            {
+              "source": "Name",
+              "rename": "Full Name",
+              "type": "str"
+            },
+            {
+              "source": "Age",
+              "type": "int"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}</code></pre>
+
+          <p class="mt-3">
+            🔗 For full documentation, visit the
+            <a href="https://github.com/pacificnm/airtable_to_tableau" target="_blank">airtable_to_tableau GitHub repository</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    </div>
+
+    <!-- Right: Metadata -->
+    <div class="col-md-4">
+      <h4>📊 Airtable Metadata</h4>
+      {% for meta in metadata %}
+        <h5>{{ meta.table_name }} (Base: {{ meta.base_id }})</h5>
+        {% if meta.error %}
+          <div class="alert alert-warning">{{ meta.error }}</div>
+        {% else %}
+          <ul class="list-group mb-3">
+            {% for field in meta.fields %}
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>{{ field.name }}</span>
+                <span class="badge bg-secondary">{{ field.type }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+

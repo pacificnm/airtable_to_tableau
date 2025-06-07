@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block title %}View Config - {{ filename }}{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h2>🟢 Exporting: {{ filename }}</h2>
+    <pre id="logOutput" style="height: 500px; background-color: #111; color: #0f0; padding: 1rem; overflow-y: auto; font-family: monospace;"></pre>
+
+
+    <a href="{{ url_for('routes.view_config', filename=filename) }}" class="btn btn-secondary mt-3">Back to Config</a>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const logOutput = document.getElementById("logOutput");
+
+      if (!logOutput) {
+        console.error("❌ logOutput element not found.");
+        return;
+      }
+
+      const streamUrl = "{{ url_for('routes.stream_export', filename=filename) }}?profile={{ profile }}";
+
+      fetch(streamUrl)
+        .then(response => {
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+
+          function read() {
+            reader.read().then(({ done, value }) => {
+              if (done) return;
+              logOutput.textContent += decoder.decode(value);
+              logOutput.scrollTop = logOutput.scrollHeight;
+              read();
+            });
+          }
+
+          read();
+        })
+        .catch(error => {
+          logOutput.textContent += "\n❌ Failed to load stream: " + error.message;
+        });
+    });
+  </script>
+  {% endblock %}

@@ -3,11 +3,14 @@ pandas>=2.0.0
 requests>=2.31.0
 python-dotenv>=1.0.0
 tableauhyperapi>=0.0.17070
+snowflake-connector-python>=3.0.0
+Flask>=2.3.0
+Flask-Bootstrap>=3.3.7.1
 
-# CLI + Packaging (argparse is built-in on Python >=3.10)
-argparse; python_version < "3.10"
+# Dev tools
 setuptools>=68.0.0
 build>=1.0.0
-
-# Optional: testing framework
 pytest>=8.0.0
+
+# Compatibility for older Python
+argparse; python_version<"3.10"

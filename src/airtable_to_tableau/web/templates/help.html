@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %}Help & Documentation{% endblock %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h1>🆘 Help & Documentation</h1>
+    <p>Welcome to the help section. Here you’ll find usage tips, CLI examples, and troubleshooting steps.</p>
+
+    <h3>🛠 CLI Usage</h3>
+    <pre><code>airtable-export export --config configs/yourfile.json --profile default</code></pre>
+
+    <h3>📁 File Types</h3>
+    <ul>
+      <li><strong>.json</strong> — Config files for exporting</li>
+      <li><strong>.hyper</strong> — Tableau Hyper output files</li>
+    </ul>
+
+    <h3>❓ Troubleshooting</h3>
+    <p>If you encounter errors, check:</p>
+    <ul>
+      <li>That your AIRTABLE_API_KEY is set</li>
+      <li>The config file path is correct</li>
+      <li>The base ID and table name match your Airtable workspace</li>
+    </ul>
+  </div>
+{% endblock %}
